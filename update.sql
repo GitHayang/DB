@@ -6,6 +6,7 @@ CREATE TABLE PRAC
  gender varchar2(2)
 );
 
+-- ì—¬ëŸ¬ì¤„ì„ ì‹¤í–‰í•  ë•ŒëŠ” F5
 INSERT INTO PRAC (custid, age, gender) VALUES ('A13566','28', '0');
 INSERT INTO PRAC (custid, age, gender) VALUES ('A14219','26', '0');
 INSERT INTO PRAC (custid, age, gender) VALUES ('A15312','30', '1');
@@ -15,12 +16,12 @@ INSERT INTO PRAC (custid, age, gender) VALUES ('B16849','26', '0');
 select * from PRAC
 order by CUSTOMER_ID;
 
--- Ä®·³¸í º¯°æ
+-- ì¹¼ëŸ¼ ë³€ê²½
 alter table Prac 
 rename column CUSTID 
 to CUSTOMER_ID;
 
--- ¼Ó¼º º¯°æ
+-- ì†ì„± ë³€ê²½
 update PRAC
 set CUSTOMER_ID = 'athena' 
 where CUSTOMER_ID= 'A13566';
