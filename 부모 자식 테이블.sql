@@ -4,7 +4,7 @@ DROP TABLE TESTER_SON3;
 
 SELECT * FROM TABS;
 
--- ╨н╦Певюл╨М ╩Щ╪╨
+-- К╤─К╙╗ М┘▄Л²╢К╦■ Л┐²Л└╠
 CREATE TABLE TESTER3 (
 REGION VARCHAR2(100),
 NAME VARCHAR2(20),
@@ -16,9 +16,9 @@ SELECT * FROM TESTER3;
 INSERT INTO TESTER3
 (REGION, NAME)
 VALUES
-('╪╜©О╫ц','╧И╫б╪Ж');
+('Л└°Л ╦Л▀°','К╟╠1');
 
--- юз╫девюл╨М ╩Щ╪╨
+-- Л·░Л▀² М┘▄Л²╢К╦■ Л┐²Л└╠
 CREATE TABLE TESTER_SON3(
 REGION VARCHAR2(100),
 NAME VARCHAR2(20),
