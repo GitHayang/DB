@@ -9,7 +9,7 @@ BIRTH INT
 INSERT INTO TESTERMODEL_0310
 (NAME, BIRTH)
 VALUES
-('╧И╫б╪Ж',19980921);
+('К╟╠',11110101);
 
 SELECT *
 FROM TESTERMODEL_0310;
@@ -28,14 +28,14 @@ VALUES('A01','PRODUCT01','202301',100);
 SELECT * 
 FROM TESTERMODEL_0310_2;
 
--- ╨н╦Певюл╨М ╩Щ╪╨
+-- К╤─К╙╗М┘▄Л²╢К╦■ Л┐²Л└╠
  CREATE TABLE KOPO_EVENT_INFO_FOREIGN(
      EVENTID VARCHAR2(20),
      EVENTPERIOD VARCHAR2(20),
      PROMOTION_RATIO NUMBER,
  constraint pk_kopo_event_info_foreign primary key(EVENTID));
 
--- юз╫девюл╨М ╩Щ╪╨
+-- Л·░Л▀²М┘▄Л²╢К╦■ Л┐²Л└╠
  CREATE TABLE KOPO_PRODUCT_VOLUME_FOREIGN(
      REGIONID VARCHAR2(20),
      PRODUCTGROUP VARCHAR2(20),
