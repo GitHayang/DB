@@ -3,7 +3,7 @@ drop table prac;
 CREATE TABLE PRAC
 (custid varchar2(10), 
  age varchar2(3), 
- gender varchar2(2)
+ gender varchar2(10)
 );
 
 -- 여러줄을 실행할 때는 F5
@@ -25,3 +25,11 @@ to CUSTOMER_ID;
 update PRAC
 set CUSTOMER_ID = 'athena' 
 where CUSTOMER_ID= 'A13566';
+
+update PRAC
+set GENDER = '0' 
+where CUSTOMER_ID= '여성';
+
+update PRAC
+set GENDER = '1' 
+where CUSTOMER_ID= '남성';
