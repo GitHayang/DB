@@ -1,0 +1,7 @@
+SELECT * 
+FROM KOPO_CHANNEL_RESULT
+WHERE 1=1
+AND PRODUCTGROUP = &INTV
+AND YEARWEEK = &INYEARWEEK;
+
+실행하면 팝업창이 뜨고 해당 창에서 조건을 넣어주면 해당 조건으로 검색한다
