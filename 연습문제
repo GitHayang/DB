@@ -1,0 +1,134 @@
+SELECT * FROM CUSTINFO;
+
+SELECT * FROM ADVERMAIN;
+
+SELECT * FROM ADVERINFO;
+
+SELECT * FROM KEYWORD;
+
+
+-- 1번 광고 아이디별 과금 금액을 쿼리로 작성하시오
+SELECT C.아이디, C.광고코드, D.광고키워드, D.클릭광고가격,D.클릭수,
+        D.클릭광고가격*D.클릭수 AS 과금금액
+FROM (
+    SELECT A.아이디, B.광고코드
+    FROM CUSTINFO A
+    LEFT JOIN ADVERMAIN B
+    ON A.아이디 = B.아이디
+)C
+LEFT JOIN KEYWORD D
+ON C.광고코드 = D.광고코드
+ORDER BY 아이디,과금금액;
+
+
+-- 2번 2023년 5월12일 기준 아이디별 "광고종료일"을 산출하시오 (만약 이미 지났다면, "기간만료" 값을 넣으면 됨
+SELECT A.*, TO_CHAR(TO_NUMBER(REPLACE(A.기간,'일','')) + TO_DATE(A.등록일),'YYYY-MM-DD') AS 종료일,
+        CASE WHEN TO_CHAR(SYSDATE+TO_NUMBER(REPLACE(A.기간,'일','')),'YYYY-MM-DD') < '2023-05-12' THEN '기간만료'
+        ELSE TO_CHAR(SYSDATE+TO_NUMBER(REPLACE(A.기간,'일','')),'YYYY-MM-DD')
+        END AS 결과
+FROM ADVERMAIN A
+LEFT JOIN CUSTINFO B
+ON A.아이디 = B.아이디
+ORDER BY 종료일;
+
+
+-- 3번 kaifox가 본인 광고를 담당하는 담당자 정보 및 전화번호 및 이메일주소를 조회하기 위한 쿼리를 작성하시오
+SELECT C.아이디, C.광고코드, D.*
+FROM(
+    SELECT A.아이디, B.광고코드,B.광고주
+    FROM CUSTINFO A
+    LEFT JOIN ADVERMAIN B
+    ON A.아이디 = B.아이디
+)C
+LEFT JOIN ADVERINFO D
+ON C.광고주 = D.광고주
+WHERE 1=1
+AND C.아이디 = 'kaifox';
+
+
+-- 4번 키워드별 클릭횟수를 표시하는 쿼리를 작성하시오
+SELECT 광고키워드, SUM(A.클릭수) AS 클릭수 
+FROM KEYWORD A
+GROUP BY A.광고키워드
+ORDER BY 클릭수 DESC;
+
+
+-- 5번 "스마트금융과" 키워드를 검색 시 노출 시킬 사이트 광고주소 및 광고설명을 출력하는 쿼리를 작성하시오 (단 설정한 클릭당 광고가격이 큰 순서가 맨앞에 와야함)
+SELECT A.광고코드, A.광고키워드, B.광고주소, B.광고설명
+FROM KEYWORD A
+LEFT JOIN ADVERMAIN B
+ON A.광고코드 = B.광고코드
+WHERE A.광고키워드 = '스마트금융과';
+
+
+-- 6번 회원가입은 했으나 광고를 실행하지 않은 아이디 정보를 조회하는 쿼리를 작성하시오
+SELECT B.아이디, A.클릭광고가격, A.클릭수, A.노출수
+FROM KEYWORD A
+LEFT JOIN ADVERMAIN B
+ON A.광고코드 = B.광고코드
+WHERE 1=1
+AND A.클릭광고가격 IS NULL;
+
+
+--7번 사용자별 광고 키워드 평균 가격을 조회하는 쿼리를 작성하시오 (단, 0은 평균 계산 시 포함, 빈값은 평균계산 시 미 포함), 사용자가 내는 평균가격
+SELECT E.아이디, AVG(E.클릭광고가격) AS 클릭광고합계 
+FROM (
+    SELECT C.아이디, D.*, (D."클릭광고가격"*D.클릭수) AS 가격 
+    FROM(
+        SELECT B.광고코드, A.아이디
+        FROM CUSTINFO A
+        LEFT JOIN ADVERMAIN B
+        ON A.아이디 = B.아이디 
+    )C
+    LEFT JOIN KEYWORD D
+    ON C.광고코드 = D.광고코드
+    ORDER BY 가격
+)E
+WHERE E.클릭광고가격 IS NOT NULL
+GROUP BY E.아이디
+ORDER BY E.아이디;
+
+
+--8번 광고가 가장 먼저 등록된 시점이 언제인지 조회하는 쿼리를 작성하시오
+SELECT C.아이디, C.광고코드, D.광고키워드, C.등록일
+FROM (
+    SELECT A.아이디, B.광고코드, B.등록일
+    FROM CUSTINFO A
+    LEFT JOIN ADVERMAIN B
+    ON A.아이디 = B.아이디
+)C
+LEFT JOIN KEYWORD D
+ON C.광고코드 = D.광고코드
+ORDER BY C.아이디, C.광고코드, C.등록일;
+
+
+--9번 2023년 5월12일 기준 활성화된 키워드별 노출수를 표시하시오 (단, 노출수가 가장 많은 데이터를 먼저 보여주시오)
+SELECT C.아이디, D.광고키워드, C."등록일", C.종료일, C.결과
+FROM(
+    SELECT A.*, TO_CHAR(TO_NUMBER(REPLACE(A.기간,'일','')) + TO_DATE(A.등록일),'YYYYMMDD') AS 종료일,
+            CASE WHEN TO_CHAR(SYSDATE+TO_NUMBER(REPLACE(A.기간,'일','')),'YYYY-MM-DD') < '2023-05-12' THEN '기간만료'
+            ELSE TO_CHAR(SYSDATE+TO_NUMBER(REPLACE(A.기간,'일','')),'YYYY-MM-DD')
+            END AS 결과
+    FROM ADVERMAIN A
+    LEFT JOIN CUSTINFO B
+    ON A.아이디 = B.아이디
+    ORDER BY 종료일
+)C
+LEFT JOIN KEYWORD D
+ON C.광고코드 = D.광고코드
+WHERE C.결과 NOT IN '기간만료';
+
+
+-- 10번 haiteam' 사용자가 본인이 광고한 광고주소별 키워드를 조회하기위한 쿼리를 작성하시오
+SELECT C.아이디, C.광고주소, D.광고키워드
+FROM (
+    SELECT A.아이디, B.광고코드, B.광고주소
+    FROM CUSTINFO A
+    LEFT JOIN ADVERMAIN B
+    ON A.아이디 = B.아이디
+)C
+LEFT JOIN KEYWORD D
+ON C.광고코드 = D.광고코드
+WHERE 1=1
+AND C.아이디 = 'haiteam'
+ORDER BY C.아이디, C.광고주소;
