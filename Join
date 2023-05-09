@@ -1,0 +1,26 @@
+SELECT A.*,B.*
+FROM 테이블1 A
+FULL OUTER JOIN 테이블2 B
+ON A.키값 = B.키값;
+
+Join방식
+left join : 테이블1에 있는 값을 기준으로 join되고, 테이블 1에 없고, 테이블2에 있는 값은 삭제된다.
+right join : 테이블2에 있는 값을 기준으로 join되고, 테이블 2에 없고, 테이블1에 있는 값은 삭제된다.
+full outer join : 테이블1, 테이블2의 모든 값이 살아있고, 한쪽에 없는 데이터는 null형태로 나타난다.
+inner join : 테이블1, 테이블2에 공통적으로 들어있는 데이터만 남고 나머지는 삭제된다.
+
+on : join을 위한 키값이 들어가고, and를 이용해서 여러개를 쓸 수도 있다.
+        이때 키값은 양 테이블에 동일해야하고, 칼럼명이 같을 필요는 없으며, 데이터가 동일하면 된다.
+        
+        
+        
+SELECT C.*, D.*
+FROM (
+    SELECT A.*, B.*
+    FROM 테이블1 A
+    LEFT JOIN 테이블2 B
+    ON A.키값 = B.키값
+)C
+LEFT JOIN 테이블3 D
+ON C.키값 = D.키값;
+위와 같이 서브쿼리 절을 이용해서 여러개의 테이블을 동시에 join할 수도 있다.
