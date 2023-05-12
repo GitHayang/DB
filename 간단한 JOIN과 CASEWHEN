@@ -1,0 +1,26 @@
+SELECT * FROM MASTERDATA;
+
+SELECT * FROM SUBDATA;
+
+SELECT 
+    CASE WHEN (A.MATA_TIN != 0 AND B.MATA_TIN != 0) THEN A.SUTA_TIN
+            WHEN(A.MATA_TIN != 0) THEN A.MATA_TIN 
+    END AS MATA_TIN,
+    A.MATA_TXPR_SEX_CD, 
+    A.MATE_MDF_YN, 
+    A.MATE_SRCS_CNTN, 
+    A.MEM_RIT_CD, 
+    A.RIT_END_DT, 
+    A.RIT_STRT_DT, 
+    A.SUTA_TIN,
+    A.SUTA_TXPR_SEX_CD,
+    B.*
+FROM MASTERDATA A
+LEFT JOIN SUBDATA B
+ON A.SUTA_TIN = B.SUTA_TIN;
+
+# 칼럼들을 불러올때 테이블에 F4를 누르면 칼럼을 선택하고 복사할 수 있다.
+# 메인을 FROM절에 서브를 JOIN절에 놓는다
+# JOIN에는 LEFT, RIGHT, INNNER가 있다 그 외에도 있지만 주로 쓰는 것은 3가지다.
+# 위의 3가지에 따라 기준이 변한다.
+# ON뒤에는 서로 공통으로 가져 KEY가 될 수 있는 값을 넣는다.

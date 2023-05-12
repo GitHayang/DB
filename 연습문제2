@@ -1,0 +1,355 @@
+SELECT * FROM BUSEO_TEST;
+
+SELECT * FROM KNMUJI_TEST;
+
+SELECT * FROM SAWON_TEST;
+
+SELECT * FROM JIKGB_TEST;
+
+--1. 급여가 800만원 이상인 사원의 사원명, 직급코드를 출력하시오
+SELECT * 
+FROM SAWON_TEST
+WHERE 1=1
+AND 급여>=8000000
+ORDER BY 급여;
+
+
+--2. 입사일이 2010년~2018년 사이인 사원의 사원명, 부서코드, 급여, 입사일을 출력하시오
+SELECT 사원명, 부서코드, 급여, 입사일
+FROM SAWON_TEST
+WHERE 1=1
+AND SUBSTR(TO_CHAR(입사일),1,10) BETWEEN '2010-01-01' AND '2018-12-31'
+ORDER BY 입사일;
+
+
+--3. 입사일이 2020년 08월이면서 부서코드가 'C'가 아닌 사원의 사원명, 근무지코드, 부서코드를 출력하시오
+SELECT 사원명, 근무지코드, 부서코드
+FROM SAWON_TEST
+WHERE 1=1
+AND SUBSTR(TO_CHAR(입사일),1,10) BETWEEN '2020-08-01' AND '2020-08-31'
+AND 부서코드 NOT IN 'C'
+ORDER BY 사원명;
+
+
+--4. 사원의 총인원수를 출력하시오
+SELECT COUNT(사원명)
+FROM SAWON_TEST;
+
+
+--5. 상급자사원번호가 없는 사원의 총인원수와 총급여합을  출력하시오
+SELECT COUNT(사원명) AS 총인원수와 ,SUM(급여) AS 총급여합
+FROM SAWON_TEST
+WHERE 1=1
+AND 상급자사원번호 IS NULL;
+
+
+--6. 급여가 300만원이하이면서 2020년 08월 15일 이후에 입사한 사원의 총인원수와 총급여합을 출력하시오
+SELECT COUNT(사원명) AS 총인원수와 ,SUM(급여) AS 총급여합
+FROM SAWON_TEST
+WHERE 1=1
+AND SUBSTR(TO_CHAR(입사일),1,10) > '2020-08-15';
+
+
+--7. '한' 씨 성을 가진 사원들을 출력하시오
+SELECT *
+FROM SAWON_TEST
+WHERE 1=1
+AND SUBSTR(사원명,1,1) = '한';
+
+
+--8. 직급별 급여의 평균을 출력하시오(반올림해서 정수만 출력)
+SELECT C.직급명, ROUND(AVG(C.급여)) AS 급여평균
+FROM(
+    SELECT A.*, B.직급명
+    FROM SAWON_TEST A
+    LEFT JOIN JIKGB_TEST B
+    ON A.직급코드 = B.직급코드
+)C
+WHERE C.직급명 IS NOT NULL
+GROUP BY C.직급명;
+
+
+--9. 사원명에 '삭' 자가 포함되어 있거나 '김'씨 성을 가진 사원의 급여합을 출력하시오
+SELECT SUM(급여) AS 급여합
+FROM SAWON_TEST
+WHERE 1=1
+AND 사원명 LIKE '%삭%'
+OR SUBSTR(사원명,1,1) = '김';
+
+
+--10. 부서별 사원수를 출력하시오
+SELECT B.부서명, COUNT(사원명) AS 사원수
+FROM SAWON_TEST A
+LEFT JOIN BUSEO_TEST B
+ON A.부서코드 = B.부서코드
+GROUP BY B.부서명;
+
+
+--11. 근무지별 사원의 총인원수를 출력하시오
+SELECT B.근무지명, COUNT(A.사원명)
+FROM SAWON_TEST A
+LEFT JOIN KNMUJI_TEST B
+ON A.근무지코드 = B.근무지코드
+GROUP BY B.근무지명;
+
+
+--12. 가장 높은 급여와 가장 낮은 급여를 출력하시오
+SELECT MIN(급여) AS 최소급여, MAX(급여) AS 최대급여 
+FROM SAWON_TEST;
+
+
+--13. 급여가 500만원 이상, 800만원 이하인 사원의 급여평균과 급여의 최대값을 출력하시오
+SELECT  MAX(급여) AS 최대급여, ROUND(AVG(급여)) AS 급여평균
+FROM SAWON_TEST
+WHERE 1=1 
+AND 급여 BETWEEN 5000000 AND 8000000;
+
+
+--14. 가장 높은 급여와 가장 낮은 급여의 차를 출력하시오
+SELECT MIN(급여) AS 최소급여, MAX(급여) AS 최대급여,  (MAX(급여)- MIN(급여)) AS 급여차
+FROM SAWON_TEST;
+
+
+--15. 근무지가 'A1'이 아닌 사원들의 부서코드별 사원수를 출력하시오
+SELECT *
+FROM SAWON_TEST
+WHERE 근무지코드 NOT IN 'A1';
+
+
+--16. 부서코드별 사원번호순으로 부서코드, 사원번호, 사원명, 급여의 누적값을 구해서 출력하시오
+SELECT 부서코드, 사원번호, SUM(급여) OVER(ORDER BY 부서코드, 사원번호) AS 급여누적
+FROM SAWON_TEST
+WHERE 부서코드 IS NOT NULL
+ORDER BY 부서코드, 사원번호;
+
+
+--17. 부서명, 사원명 출력하시오 
+SELECT A.부서명, B.사원명
+FROM SAWON_TEST B
+LEFT JOIN BUSEO_TEST A
+ON A.부서코드 = B.부서코드
+ORDER BY A.부서명, B.사원명;
+
+
+--18. 전체 사원명과 부서명을 출력하되 부서명이 존재하지 않는 부서코드는 '부서명없음'으로 출력하시오
+SELECT CASE WHEN A.부서명 IS NULL THEN '부서명없음'
+       ELSE A.부서명
+       END AS 부서명,
+       B.사원명
+FROM SAWON_TEST B
+LEFT JOIN BUSEO_TEST A
+ON A.부서코드 = B.부서코드
+ORDER BY A.부서명, B.사원명;
+
+
+--19. 부서명으로 오름차순 정렬해서 부서명, 사원명, 입사일을 출력하시오
+SELECT A.부서명, B.사원명, B.입사일
+FROM SAWON_TEST B
+LEFT JOIN BUSEO_TEST A
+ON A.부서코드 = B.부서코드
+WHERE 1=1
+AND 부서명 IS NOT NULL
+ORDER BY A.부서명;
+
+
+--20. 부서명과 부서별 사원의 총인원수를 출력하시오
+SELECT A.부서명, COUNT(부서명) AS 총인원수
+FROM SAWON_TEST B
+LEFT JOIN BUSEO_TEST A
+ON A.부서코드 = B.부서코드
+WHERE A.부서명 IS NOT NULL
+GROUP BY A.부서명;
+
+
+--21. 사원명을 출력하되 급여가 100만원 미만이면 0, 100만원~200만원 사이면 200, 200만원~300만원이면 300...(구간대를 1000만원까지) 을 함께 출력하시오(사원별 급여구간)
+SELECT 사원명, 
+       CASE WHEN 급여 < 1000000 THEN 0
+       WHEN 급여 BETWEEN 1000000 AND 2000000 THEN 100
+       WHEN 급여 BETWEEN 2000000 AND 3000000 THEN 200
+       WHEN 급여 BETWEEN 3000000 AND 4000000 THEN 300
+       WHEN 급여 BETWEEN 4000000 AND 5000000 THEN 400
+       WHEN 급여 BETWEEN 5000000 AND 6000000 THEN 500
+       WHEN 급여 BETWEEN 6000000 AND 7000000 THEN 600
+       WHEN 급여 BETWEEN 7000000 AND 8000000 THEN 700
+       WHEN 급여 BETWEEN 8000000 AND 9000000 THEN 800
+       WHEN 급여 BETWEEN 9000000 AND 10000000 THEN 900
+       ELSE 1000
+       END AS 급여
+FROM SAWON_TEST
+WHERE 사원명 IS NOT NULL
+ORDER BY 사원명, 급여;
+
+
+--22. 사원이 속한 모든 부서의 부서별 부서명과 급여합을 출력하시오
+SELECT A.부서명, SUM(B.급여) AS 급여합
+FROM SAWON_TEST B
+LEFT JOIN BUSEO_TEST A
+ON A.부서코드 = B.부서코드
+GROUP BY A.부서명
+ORDER BY 급여합;
+
+
+--23. 부서별 부서명, 최소급여, 최대급여 출력하시오
+SELECT A.부서명, MIN(B.급여) AS 최소급여, MAX(B.급여) AS 최대급여
+FROM SAWON_TEST B
+LEFT JOIN BUSEO_TEST A
+ON A.부서코드 = B.부서코드
+GROUP BY A.부서명
+ORDER BY A.부서명;
+
+
+--24. 전체 사원을 대상으로 사원번호, 사원명, 상급자사원번호, 상급자사원명을 출력하시오(상급자사원번호가 없는 사원이 상급자임)
+SELECT 사원번호, 사원명, 상급자사원번호
+FROM SAWON_TEST
+WHERE 상급자사원번호 IS NULL
+AND 사원번호 IS NOT NULL;
+
+
+--25. 상급자사원명이 '허잔석' 인 사원들의 부서명별 급여평균을 출력하시오
+SELECT B.부서명, AVG(급여) AS 급여평균
+FROM SAWON_TEST A
+LEFT JOIN BUSEO_TEST B
+ON A.부서코드 = B.부서코드
+WHERE 상급자사원번호 IN(
+    SELECT 사원번호
+    FROM SAWON_TEST
+    WHERE 사원명 LIKE '허잔석'
+)
+GROUP BY B.부서명;
+
+
+--26. 부서별 급여의 합이 1억원이 넘는 부서의 부서명과 해당 부서의 급여합을 출력하시오
+SELECT B.부서명, SUM(급여) AS 급여합
+FROM SAWON_TEST A
+LEFT JOIN BUSEO_TEST B
+ON A.부서코드 = B.부서코드
+GROUP BY B.부서명
+HAVING SUM(급여) > 100000000;
+
+
+--27. 전체 사원을 대상으로 부서별 사원수가 2명 미만인 부서의 부서코드, 부서명, 사원수를 출력하시오(부서명이 없으면 '부서명없음'으로 출력)
+SELECT B.부서코드,
+       CASE WHEN B.부서명 IS NULL THEN '부서명없음'
+       ELSE B.부서명
+       END AS 부서명, 
+       COUNT(사원명) AS 사원수
+FROM SAWON_TEST A
+LEFT JOIN BUSEO_TEST B
+ON A.부서코드 = B.부서코드
+GROUP BY B.부서코드, B.부서명
+HAVING COUNT(사원명) < 2;
+
+
+--28. 부서별로 부서코드, 부서명, 사원수를 출력하되 부서명이 존재 하지 않으면 부서명은 '부서명없음', 사원수를 0으로 출력하시오
+SELECT B.부서코드,
+       CASE WHEN B.부서명 IS NULL THEN '부서명없음'
+       ELSE B.부서명
+       END AS 부서명, 
+       CASE WHEN B.부서명 IS NULL THEN 0
+       ELSE COUNT(사원명)
+       END AS 사원수
+FROM SAWON_TEST A
+LEFT JOIN BUSEO_TEST B
+ON A.부서코드 = B.부서코드
+GROUP BY B.부서코드, B.부서명;
+
+
+--29. 가장 많은 사원을 데리고 있는 상급자의 상급자명, 부서명을 출력하시오
+SELECT *
+FROM(
+    SELECT D.사원명 AS 상급자명, C.부서명, COUNT(C.부서명) AS 사원수
+    FROM(
+        SELECT B.부서명, A.상급자사원번호
+        FROM SAWON_TEST A
+        LEFT JOIN BUSEO_TEST B
+        ON A.부서코드 = B.부서코드
+    )C
+    LEFT JOIN(
+        SELECT 사원번호, 사원명
+        FROM SAWON_TEST
+        WHERE 상급자사원번호 IS NULL
+    )D
+    ON C.상급자사원번호 = D.사원번호
+    WHERE 사원명 IS NOT NULL
+    AND 부서명 IS NOT NULL
+    GROUP BY D.사원명, C.부서명
+    ORDER BY 사원수 DESC
+)
+WHERE ROWNUM = 1;
+
+
+--30. 부서명이 등록되지 않은 사원과 직급이 같고 현황조사를 하고 있는 사원의 사원명, 직급명을 출력하시오
+SELECT E.사원명, E.직급명, F.부서명
+FROM(
+    SELECT A.사원명, A.직급코드, B.직급명, A.부서코드
+    FROM SAWON_TEST A
+    LEFT JOIN JIKGB_TEST B
+    ON A.직급코드 = B.직급코드
+    WHERE B.직급명 IN(
+        SELECT D.직급명
+        FROM(
+            SELECT A.*, B.부서명
+            FROM SAWON_TEST A
+            LEFT JOIN BUSEO_TEST B
+            ON A.부서코드 = B.부서코드
+            WHERE 부서명 IS NULL
+            AND 사원번호 IS NOT NULL
+        )C
+        LEFT JOIN JIKGB_TEST D
+        ON C.직급코드 = D.직급코드
+    )
+)E
+LEFT JOIN BUSEO_TEST F
+ON E.부서코드 = F.부서코드
+WHERE 부서명 = '현황조사';
+
+
+--31. 직급별로 최소 급여를 받고 있는 사원의 사원번호, 사원명, 부서명, 급여를 급여의 내림차순 정렬로 출력하시오
+SELECT DISTINCT C.직급명, C.사원번호, C.사원명, C.급여,  D.부서명
+FROM (
+    SELECT A.사원번호, A.사원명, A.급여, A.부서코드, B.직급명
+    FROM SAWON_TEST A
+    LEFT JOIN JIKGB_TEST B
+    ON A.직급코드 = B.직급코드
+)C
+LEFT JOIN BUSEO_TEST D
+ON C.부서코드 = D.부서코드
+WHERE C.급여 IN (
+    SELECT MIN(A.급여) AS 급여
+    FROM SAWON_TEST A
+    LEFT JOIN JIKGB_TEST B
+    ON A.직급코드 = B.직급코드
+    GROUP BY B.직급명
+)
+ORDER BY C.급여 DESC;
+
+
+--32. 각 사원의 시급을 계산(근무일수 20일, 9시간근무, 소수 첫번째 자리에서 반올림)해서 부서명, 사원명, 직급명, 시급을 부서명별, 시급이 많은 순으로 출력하시오
+SELECT D.부서명, C.사원명, C.직급명,  ROUND((C.급여/20)/9) AS 시급
+FROM (
+    SELECT A.사원명, A.급여, A.부서코드, B.직급명
+    FROM SAWON_TEST A
+    LEFT JOIN JIKGB_TEST B
+    ON A.직급코드 = B.직급코드
+)C
+LEFT JOIN BUSEO_TEST D
+ON C.부서코드 = D.부서코드
+WHERE D.부서명 IS NOT NULL
+ORDER BY D.부서명, 시급 DESC;
+
+
+--33. 직급별 입사일이 가장 오래된 사원에 대해 사원명, 직급명, 입사년도를 출력하시오
+SELECT A.사원명, B.직급명, A.입사일
+FROM SAWON_TEST A
+LEFT JOIN JIKGB_TEST B
+ON A.직급코드 = B.직급코드
+WHERE A.입사일 IN (
+    SELECT MIN(A.입사일) AS 입사일
+    FROM SAWON_TEST A
+    LEFT JOIN JIKGB_TEST B
+    ON A.직급코드 = B.직급코드
+    WHERE A.사원명 IS NOT NULL
+    GROUP BY B.직급명
+)
+ORDER BY A.입사일;
+
