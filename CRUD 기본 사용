@@ -1,0 +1,205 @@
+#CRUD 
+
+ 
+
+SELECT [컬럼명, 모든 컬럼일 경우 '*'] 
+
+FROM [테이블명] 
+
+  
+
+SELECT 칼럼명 FROM 위치 WHERE 조건 
+
+  
+
+전체 조회 
+
+SELECT * FROM TABS; 
+
+  
+
+TABLE_NAME 이라는 칼럼 조회 
+
+SELECT TABLE_NAME FROM TABS 
+
+  
+
+  
+
+#CREATE 
+
+테이블 만들고 저 안에는 100개의 CHAR를 넣을수 있다 
+
+  
+
+CREATE TABLE 테이블이름 
+
+  
+
+(    필드이름1 필드타입1, 
+
+    필드이름2 필드타입2, 
+
+    ... 
+
+) 
+
+  
+
+CREATE TABLE PRACTICE_TABLE_백승수( 
+
+REGIONID VARCHAR2(100), --문자열을 저장하는 지역 ID 
+
+PRODUCT VARCHAR2(100), 
+
+QTY NUMBER 
+
+) 
+
+  
+
+만든 후 조회 
+
+SELECT *  
+
+FROM PRACTICE_TABLE_백승수 
+
+  
+
+  
+
+#READ 
+
+-- 거래량이 30만건 이상인 데이터를 찾아줘 
+
+-- 나는 201401인 정보만 찾고싶다.  
+
+SELECT *  
+
+FROM KOPO_PRODUCT_VOLUME -- 거래정보 테이블 
+
+WHERE VOLUME >= 300000 
+
+AND YEARWEEK = '201401' 
+
+  
+
+  
+
+#UPDATE [테이블명]  
+
+--SET [컬럼명] = '변경값' 
+
+--WHERE [조건] 
+
+-- UPDATE 
+
+-- 김대리!! 현재 데이터에서 !! 50만건 이상 나온 데이터를 
+
+-- 전부 50만건으로 바꿔줘!! 
+
+SELECT * 
+
+FROM KOPO_PRODUCT_VOLUME 
+
+WHERE VOLUME >= 500000; 
+
+-- VOLUME변경 20230309 주차별 최대 거래량 50만 제한 
+
+--UPDATE [테이블명]  
+
+--SET [컬럼명] = '변경값' 
+
+--WHERE [조건] 
+
+  
+
+-- 테이블에서 조건에 맞는 데이터만  
+
+-- SET 해당 칼럼에 대해서만 변경하겠다 
+
+UPDATE KOPO_PRODUCT_VOLUME 
+
+SET VOLUME = '500000' 
+
+WHERE VOLUME >= 500000 
+
+  
+
+-- 테이블에 데이터 추가 UPDATE에 포함되는 구문 
+
+SELECT *  
+
+FROM PACTICE_TABLE_백승수; 
+
+  
+
+--INSERT INTO [테이블명] 
+
+--VALUES('','') 
+
+  
+
+INSERT INTO ACTICE_TABLE_백승수 
+
+(REGIONID, PRODUCTID, QTY) --저 항목만 INSERT하겠다 
+
+VALUES ('서울지점','국민카드',100) 
+
+  
+
+다중입력 
+
+INSERT ALL INTO PRACRICE_0309 (NAME, PRODUCT, BIRTH) 
+
+VALUES('강감찬','칼',17700326) 
+
+INTO PRACRICE_0309 (NAME, PRODUCT, BIRTH) 
+
+VALUES('이순신','거북선',15550515) 
+
+INTO PRACRICE_0309 (NAME, PRODUCT, BIRTH) 
+
+VALUES('이도','한글',14930304) 
+
+SELECT * 
+
+FROM DUAL; 
+
+ 
+
+칼럼명 변경 
+
+ALTER TABLE PRACRICE_0309  
+
+RENAME COLUMN PRODUCT 
+
+TO JOB; 
+
+  
+
+#DELETE 
+
+-- 고객 데이터에서 장치 사용건수가 5건 이상 사용자들만 뽑아줘 
+
+SELECT *  
+
+FROM CUSTOMERDATA 
+
+WHERE DEVICOUNT >= 5; 
+
+  
+
+--DELETE  
+
+--FROM[테이블명] 
+
+--WHERE[조건] 
+
+  
+
+DELETE 
+
+FROM CUSTOMERDATA 
+
+WHERE DEVICECOUNT >=5 
